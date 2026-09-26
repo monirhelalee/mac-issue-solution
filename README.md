@@ -11,109 +11,73 @@ External monitor is not detected through the built-in HDMI port.
 - Only the built-in display appears in macOS
 - Restarting may fix it temporarily
 
-## Quick Fixes
+## Solution
+# Mac M4: Safe Mode-এ Display Preferences Reset
 
-1. Unplug HDMI and turn off the monitor.
-2. Unplug monitor power for 30 seconds.
-3. Turn on the monitor and select the correct **HDMI input**.
-4. Connect HDMI directly to the MacBook’s built-in HDMI port.
-5. Go to **System Settings → Displays**.
-6. Hold `Option (⌥)` and click **Detect Displays**.
-7. Disable **FreeSync / VRR / Adaptive Sync** in the monitor settings if available.
-8. Test another HDMI cable.
+## ১. প্রস্তুতি / Preparation
 
-## Reset Display Preferences
+1. Mac থেকে HDMI ক্যাবল খুলে রাখুন।  
+   Disconnect the HDMI cable from your Mac.
 
-If the monitor is still not detected:
+2. আপনার কাজ সেভ করুন।  
+   Save your work.
 
-1. Disconnect HDMI.
-2. Shut down the Mac.
-3. Start in Safe Mode:
-   - Hold the power button until startup options appear.
-   - Select the startup disk.
-   - Hold `Shift` and click **Continue in Safe Mode**.
-4. Delete these files if they exist:
+3. নির্দেশনাগুলোর স্ক্রিনশট ফোনে রাখুন অথবা কাগজে লিখে রাখুন—Safe Mode-এ Cursor খোলা নাও থাকতে পারে।  
+   Keep screenshots of these instructions on your phone or write them down—Cursor may not open in Safe Mode.
 
-```text
-/Library/Preferences/com.apple.windowserver.plist
-/Library/Preferences/com.apple.windowserver.displays.plist
-~/Library/Preferences/com.apple.windowserver.plist
-~/Library/Preferences/ByHost/com.apple.windowserver.*.plist
+## ২. Safe Mode-এ বুট করুন / Boot into Safe Mode
+### Apple Silicon / M4
+
+1. **Apple menu → Shut Down** নির্বাচন করুন। সম্পূর্ণ বন্ধ হওয়া পর্যন্ত অপেক্ষা করুন।  
+   Choose **Apple menu → Shut Down** and wait until the Mac shuts down completely.
+
+2. Startup options বা ডিস্ক আইকন আসা পর্যন্ত **পাওয়ার বাটন চেপে ধরে রাখুন**।  
+   **Press and hold the power button** until startup options appear.
+
+3. আপনার **startup disk** সিলেক্ট করুন।  
+   Select your **startup disk**.
+
+4. **Shift** চেপে ধরে **Continue in Safe Mode** ক্লিক করুন।  
+   Hold **Shift**, then click **Continue in Safe Mode**.
+
+5. লগইন করুন। “Safe Boot” লেখা দেখে Safe Mode নিশ্চিত করুন।  
+   Log in and look for “Safe Boot” to confirm Safe Mode.
+
+## ৩. Terminal-এ কমান্ড চালান / Run the Commands in Terminal
+
+**Applications → Utilities → Terminal** খুলুন। নিচের ব্লক কপি-পেস্ট করুন।  
+Open **Applications → Utilities → Terminal** and paste the following block.
+
+> **সতর্কতা:** এই কমান্ডগুলো display preferences মুছে দেয়। `rm -rf ~/.Trash/*` কমান্ডটি Trash-এর ফাইল স্থায়ীভাবে মুছে দেয়; display reset-এর জন্য এই লাইন প্রয়োজন নেই, চাইলে বাদ দিন।  
+> **Warning:** These commands delete display preferences. The `rm -rf ~/.Trash/*` command permanently deletes files in Trash; this line is unnecessary for resetting display preferences and can be omitted.
+
+```bash
+sudo rm -f /Library/Preferences/com.apple.windowserver.plist \
+  /Library/Preferences/com.apple.windowserver.displays.plist
+
+rm -f ~/Library/Preferences/com.apple.windowserver.plist \
+  ~/Library/Preferences/ByHost/com.apple.windowserver*.plist
+
+rm -rf ~/.Trash/*
+
+echo "Done. Files remaining (should be empty):"
+ls /Library/Preferences/com.apple.windowserver* 2>/dev/null || echo "system: none"
+ls ~/Library/Preferences/ByHost/com.apple.windowserver* 2>/dev/null || echo "user: none"
 ```
 
-5. Restart normally.
-6. Reconnect HDMI after logging in.
+> `sudo` পাসওয়ার্ড চাইলে টাইপ করে **Enter** চাপুন। টাইপ করার সময় কোনো ক্যারেক্টার দেখা যাবে না।  
+> If `sudo` asks for your password, type it and press **Enter**. No characters will appear while typing.
 
-> This resets display arrangement and resolution settings only. It does not erase personal files.
+## ৪. Normal Restart ও HDMI সংযোগ / Restart Normally and Reconnect HDMI
 
-## If It Still Does Not Work
+1. **Apple menu → Restart** নির্বাচন করুন। এবার স্বাভাবিকভাবে বুট হবে।  
+   Choose **Apple menu → Restart** to boot normally.
 
-- Test with another monitor or TV.
-- Test USB-C/Thunderbolt to DisplayPort or HDMI.
-- Turn off HDR and try 4K at 60 Hz.
-- Update macOS.
-- Run Apple Diagnostics: shut down → hold power for startup options → press `Command (⌘) + D`.
-- Contact Apple Support if the built-in HDMI port still cannot detect any display.
+2. ডেস্কটপে লগইন সম্পূর্ণ হওয়ার পরে HDMI ক্যাবল লাগান।  
+   Reconnect the HDMI cable after logging in completely.
 
-## Note
+3. **System Settings → Displays** খুলে external monitor শনাক্ত হয়েছে কি না দেখুন।  
+   Open **System Settings → Displays** and check whether the external monitor is detected.
 
-A temporary fix after restart often points to a display handshake or macOS settings issue, but an intermittent HDMI port problem is also possible.
-
-# MacBook Pro M4 HDMI Fix
-
-MacBook Pro M4-এর built-in HDMI port দিয়ে external monitor detect না হলে এই ধাপগুলো চেষ্টা করুন।
-
-## সমস্যা
-
-- Monitor-এ **No Signal** দেখায়
-- HDMI cable ও monitor অন্য device-এ ঠিক কাজ করে
-- `System Settings → Displays`-এ শুধু Built-in Display দেখা যায়
-- Restart দিলে কখনো সাময়িকভাবে ঠিক হয়
-
-## দ্রুত সমাধান
-
-1. HDMI cable খুলুন এবং monitor বন্ধ করুন।
-2. Monitor-এর power cable ৩০ সেকেন্ড খুলে রাখুন।
-3. Monitor চালু করে input source **HDMI** নির্বাচন করুন।
-4. HDMI cableটি সরাসরি MacBook-এর built-in HDMI port-এ লাগান।
-5. `System Settings → Displays` খুলুন।
-6. `Option (⌥)` চেপে **Detect Displays** চাপুন।
-7. Monitor settings থেকে **FreeSync / VRR / Adaptive Sync** বন্ধ করে দেখুন।
-8. সম্ভব হলে অন্য একটি HDMI cable দিয়ে পরীক্ষা করুন।
-
-## Display Preferences Reset
-
-Monitor এখনও detect না হলে:
-
-1. HDMI খুলে রাখুন।
-2. Mac shutdown করুন।
-3. Safe Mode-এ চালু করুন:
-   - Power button চেপে ধরে startup options আসা পর্যন্ত অপেক্ষা করুন।
-   - Startup disk নির্বাচন করুন।
-   - `Shift` চেপে **Continue in Safe Mode** চাপুন।
-4. নিচের ফাইলগুলো থাকলে মুছুন:
-
-```text
-/Library/Preferences/com.apple.windowserver.plist
-/Library/Preferences/com.apple.windowserver.displays.plist
-~/Library/Preferences/com.apple.windowserver.plist
-~/Library/Preferences/ByHost/com.apple.windowserver.*.plist
-```
-
-5. Mac normalভাবে restart করুন।
-6. লগইন করার পর HDMI আবার লাগান।
-
-> এতে শুধু display arrangement ও resolution settings reset হবে; ব্যক্তিগত কোনো file মুছবে না।
-
-## তারপরও কাজ না হলে
-
-- অন্য monitor বা TV দিয়ে পরীক্ষা করুন।
-- USB-C/Thunderbolt to DisplayPort বা HDMI adapter দিয়ে test করুন।
-- HDR বন্ধ করে 4K @ 60 Hz দিয়ে চেষ্টা করুন।
-- macOS update করুন।
-- Apple Diagnostics চালান: Mac shutdown → power button ধরে startup options → `Command (⌘) + D`।
-- Built-in HDMI port কোনো display detect না করলে Apple Support বা Authorized Service Provider-এ দেখান।
-
-## নোট
-
-Restart-এর পর সাময়িকভাবে ঠিক হওয়া display handshake বা macOS settings সমস্যার ইঙ্গিত হতে পারে। তবে HDMI port-এর intermittent hardware সমস্যাও পুরোপুরি বাদ দেওয়া যায় না।
+4. প্রয়োজন অনুযায়ী **Arrangement** ও **Resolution** আবার সেট করুন।  
+   Adjust **Arrangement** and **Resolution** as needed.
